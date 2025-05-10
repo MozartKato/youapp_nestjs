@@ -12,7 +12,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async register(email: string, password: string): Promise<User> {
+  async register(email: string,username: string , password: string): Promise<User> {
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = new this.userModel({ email, password: hashedPassword });
     return user.save();
@@ -23,7 +23,7 @@ export class AuthService {
     if (!user || !(await bcrypt.compare(password, user.password))) {
       throw new UnauthorizedException('Invalid credentials');
     }
-    const payload = { email: user.email, sub: user._id };
+    const payload = { email: user.email, username: user.username, sub: user._id };
     return {
       accessToken: this.jwtService.sign(payload),
     };
